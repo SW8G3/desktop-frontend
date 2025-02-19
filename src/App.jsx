@@ -38,8 +38,18 @@ function App() {
       if (selectedNode.id === node.id) {
         return;
       }
-
-      setEdges([...edges, { from: selectedNode.id, to: node.id }]);
+  
+      // Check if the edge already exists
+      const edgeExists = edges.some(
+        (edge) =>
+          (edge.from === selectedNode.id && edge.to === node.id) ||
+          (edge.from === node.id && edge.to === selectedNode.id)
+      );
+  
+      if (!edgeExists) {
+        setEdges([...edges, { from: selectedNode.id, to: node.id }]);
+      }
+  
       setSelectedNode(null);
     }
   };
@@ -62,6 +72,7 @@ function App() {
   // Function to delete a node (via menu button)
   const handleDeleteNode = (event, nodeId) => {
     setSelectedNode(null); // Reset selected node
+    setSelectedEdge(null); // Reset selected edge
     event.stopPropagation(); // Prevents accidental node creation
     event.preventDefault();
 
