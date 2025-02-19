@@ -10,9 +10,9 @@ function App() {
     [1654, 2339], // Adjust based on floor plan image dimensions (height x width)
   ];
 
-  const [nodes, setNodes] = useState([]); // Store node positions
-  const [edges, setEdges] = useState([]); // Store edges (connections between nodes)
-  const [selectedNode, setSelectedNode] = useState(null); // Track first selected node for edge creation
+  const [nodes, setNodes] = useState([]); // Store nodes
+  const [edges, setEdges] = useState([]); // Store edges
+  const [selectedNode, setSelectedNode] = useState(null); // Track node selection for connecting
 
   // Function to add nodes on map click
   function MapClickHandler() {
@@ -25,19 +25,42 @@ function App() {
     return null;
   }
 
-  // Function to handle node click (for connecting nodes with edges)
+  // Function to handle node selection for edge creation
   const handleNodeClick = (node) => {
     if (!selectedNode) {
       setSelectedNode(node);
     } else {
-      setEdges([...edges, { from: selectedNode, to: node }]);
+      setEdges([...edges, { from: selectedNode.id, to: node.id }]);
       setSelectedNode(null);
     }
   };
 
+  // Function to update node position after dragging
+  const handleDragEnd = (event, nodeId) => {
+    const { lat, lng } = event.target.getLatLng();
+
+    // Update node position
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => (node.id === nodeId ? { ...node, position: [lat, lng] } : node))
+    );
+
+    // Update edges with new node positions
+    setEdges((prevEdges) =>
+      prevEdges.map((edge) => ({
+        from: edge.from,
+        to: edge.to,
+      }))
+    );
+  };
+
+  // Function to get the position of a node by ID
+  const getNodePosition = (nodeId) => {
+    const node = nodes.find((n) => n.id === nodeId);
+    return node ? node.position : [0, 0];
+  };
+
   return (
     <>
-      
       <div className="map-container">
         <MapContainer style={{ width: "100%", height: "100%" }} bounds={bounds} crs={L.CRS.Simple}>
           <ImageOverlay url="/2sal.png" bounds={bounds} />
@@ -45,16 +68,28 @@ function App() {
           {/* Handle Clicks to Add Nodes */}
           <MapClickHandler />
 
-          {/* Render Nodes */}
+          {/* Render Nodes (Draggable) */}
           {nodes.map((node) => (
-            <Marker key={node.id} position={node.position} eventHandlers={{ click: () => handleNodeClick(node) }}>
+            <Marker
+              key={node.id}
+              position={node.position}
+              draggable={true}
+              eventHandlers={{
+                click: () => handleNodeClick(node),
+                dragend: (e) => handleDragEnd(e, node.id),
+              }}
+            >
               <Popup>Node {node.id}</Popup>
             </Marker>
           ))}
 
-          {/* Render Edges as Lines */}
+          {/* Render Edges (Lines between Nodes) */}
           {edges.map((edge, index) => (
-            <Polyline key={index} positions={[edge.from.position, edge.to.position]} color="blue" />
+            <Polyline
+              key={index}
+              positions={[getNodePosition(edge.from), getNodePosition(edge.to)]}
+              color="blue"
+            />
           ))}
         </MapContainer>
       </div>
