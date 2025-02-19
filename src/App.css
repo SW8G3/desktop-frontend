@@ -13,3 +13,13 @@
   overflow: hidden; /* Prevent overflow */
   box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
+
+.edge-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 1000;
+}

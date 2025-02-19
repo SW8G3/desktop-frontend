@@ -36,7 +36,6 @@ function App() {
       setSelectedNode(node);
     } else {
       if (selectedNode.id === node.id) {
-        alert("Cannot create an edge to the same node!"); // Prevent self-loops
         return;
       }
 
@@ -121,6 +120,7 @@ function App() {
                 eventHandlers={{
                   click: (e) => {
                     e.originalEvent.stopPropagation(); // Stop map click event
+                    console.log("Edge clicked", index);
                     setSelectedEdge(index);
                   },
                 }}
