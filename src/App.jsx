@@ -6,22 +6,25 @@ import "./App.css";
 
 function App() {
   const bounds = [
-    [0, 0], 
+    [0, 0],
     [1654, 2339], // Adjust based on floor plan image dimensions (height x width)
   ];
 
   const [nodes, setNodes] = useState([]); // Store nodes
   const [edges, setEdges] = useState([]); // Store edges
   const [selectedNode, setSelectedNode] = useState(null); // Track selected node for edge creation
+  const [selectedEdge, setSelectedEdge] = useState(null); // Track selected edge for deletion
 
   // Function to add nodes on map click (only if clicking directly on the map)
   function MapClickHandler() {
     useMapEvents({
       click: (e) => {
-        if (e.originalEvent.target.tagName !== "BUTTON") { // Prevent accidental node creation
-          const newNode = { id: nodes.length + 1, position: [e.latlng.lat, e.latlng.lng] };
-          setNodes([...nodes, newNode]);
+        // Prevent node creation if clicking an edge or button
+        if (e.originalEvent.target.tagName === "BUTTON" || e.originalEvent.target.classList.contains("edge-click-area")) {
+          return;
         }
+        const newNode = { id: nodes.length + 1, position: [e.latlng.lat, e.latlng.lng] };
+        setNodes([...nodes, newNode]);
       },
     });
     return null;
@@ -45,7 +48,7 @@ function App() {
   // Function to update node position after dragging
   const handleDragEnd = (event, nodeId) => {
     const { lat, lng } = event.target.getLatLng();
-    
+
     setNodes((prevNodes) =>
       prevNodes.map((node) => (node.id === nodeId ? { ...node, position: [lat, lng] } : node))
     );
@@ -59,6 +62,7 @@ function App() {
 
   // Function to delete a node (via menu button)
   const handleDeleteNode = (event, nodeId) => {
+    setSelectedNode(null); // Reset selected node
     event.stopPropagation(); // Prevents accidental node creation
     event.preventDefault();
 
@@ -67,15 +71,16 @@ function App() {
     setEdges((prevEdges) => prevEdges.filter((edge) => edge.from !== nodeId && edge.to !== nodeId));
   };
 
-  // Function to delete an edge (right-click)
-  const handleEdgeRightClick = (event, edgeIndex) => {
-    event.preventDefault(); // Prevent default browser context menu
-    setEdges((prevEdges) => prevEdges.filter((_, index) => index !== edgeIndex));
+  // Function to delete an edge
+  const handleDeleteEdge = () => {
+    if (selectedEdge !== null) {
+      setEdges((prevEdges) => prevEdges.filter((_, index) => index !== selectedEdge));
+      setSelectedEdge(null);
+    }
   };
 
   return (
     <>
-      <h1>Indoor Navigation</h1>
       <div className="map-container">
         <MapContainer style={{ width: "100%", height: "100%" }} bounds={bounds} crs={L.CRS.Simple}>
           <ImageOverlay url="/2sal.png" bounds={bounds} />
@@ -103,18 +108,35 @@ function App() {
             </Marker>
           ))}
 
-          {/* Render Edges (Right-Click to Delete) */}
-          {edges.map((edge, index) => (
-            <Polyline
-              key={index}
-              positions={[getNodePosition(edge.from), getNodePosition(edge.to)]}
-              color="blue"
-              eventHandlers={{
-                contextmenu: (e) => handleEdgeRightClick(e, index), // Right-click to delete
-              }}
-            />
-          ))}
+          {/* Render Edges */}
+          {edges.map((edge, index) => {
+            const fromPos = getNodePosition(edge.from);
+            const toPos = getNodePosition(edge.to);
+
+            return (
+              <Polyline
+                key={index}
+                positions={[fromPos, toPos]}
+                color={selectedEdge === index ? "red" : "blue"} // Highlight selected edge
+                eventHandlers={{
+                  click: (e) => {
+                    e.originalEvent.stopPropagation(); // Stop map click event
+                    setSelectedEdge(index);
+                  },
+                }}
+                className="edge-click-area" // Add a class to identify edge click area
+              />
+            );
+          })}
         </MapContainer>
+
+        {/* Edge Deletion Menu */}
+        {selectedEdge !== null && (
+          <div className="edge-menu">
+            <p>Edge selected</p>
+            <button onClick={handleDeleteEdge}>Delete Edge</button>
+          </div>
+        )}
       </div>
     </>
   );
