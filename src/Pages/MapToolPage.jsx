@@ -63,7 +63,10 @@ function MapToolPage() {
                 // Calculate distance between nodes
                 const fromNode = nodes.find((n) => n.id === selectedNode.id);
                 const toNode = nodes.find((n) => n.id === node.id);
-                const distance = L.latLng(fromNode.position).distanceTo(L.latLng(toNode.position));
+                const distance = Math.sqrt(
+                    Math.pow(fromNode.position[0] - toNode.position[0], 2) +
+                    Math.pow(fromNode.position[1] - toNode.position[1], 2)
+                );
 
                 setEdges([...edges, { from: selectedNode.id, to: node.id, distance }]);
             }
@@ -84,12 +87,13 @@ function MapToolPage() {
         setEdges((prevEdges) =>
             prevEdges.map((edge) => {
                 if (edge.from === nodeId || edge.to === nodeId) {
-                    const fromNode = nodes.find((n) => n.id === edge.from);
-                    const toNode = nodes.find((n) => n.id === edge.to);
+                    const fromNode = edge.from === nodeId ? { ...edge, position: [lat, lng] } : nodes.find((n) => n.id === edge.from);
+                    const toNode = edge.to === nodeId ? { ...edge, position: [lat, lng] } : nodes.find((n) => n.id === edge.to);
                     const distance = Math.sqrt(
                         Math.pow(fromNode.position[0] - toNode.position[0], 2) +
                         Math.pow(fromNode.position[1] - toNode.position[1], 2)
                     );
+                    console.log(fromNode.position, toNode.position, distance);
                     return { ...edge, distance };
                 }
                 return edge;
