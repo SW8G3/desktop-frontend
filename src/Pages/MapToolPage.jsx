@@ -14,8 +14,8 @@ const nodeIcon = new L.DivIcon({
 });
 
 function MapToolPage() {
-    const map_width = (420 * 350) / 1000; // A3 width in mmm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
-    const map_height = (297 * 350) / 1000; // A3 height times 350 because the map is 1 : 350 scale
+    const map_width = (420 * 350) / 1000; // A3 width in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
+    const map_height = (297 * 350) / 1000; // A3 height in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
 
     const bounds = [
         [0, 0],
@@ -26,6 +26,7 @@ function MapToolPage() {
     const [edges, setEdges] = useState([]); // Store edges
     const [selectedNode, setSelectedNode] = useState(null); // Track selected node for edge creation
     const [selectedEdge, setSelectedEdge] = useState(null); // Track selected edge for deletion
+    const [nextNodeId, setNextNodeId] = useState(0); // Track next node ID
 
     // Function to add nodes on map click (only if clicking directly on the map)
     function MapClickHandler() {
@@ -35,8 +36,9 @@ function MapToolPage() {
                 if (e.originalEvent.target.tagName === "BUTTON" || e.originalEvent.target.classList.contains("edge-click-area")) {
                     return;
                 }
-                const newNode = { id: nodes.length + 1, position: [e.latlng.lat, e.latlng.lng] };
+                const newNode = { id: nextNodeId, position: [e.latlng.lat, e.latlng.lng] };
                 setNodes([...nodes, newNode]);
+                setNextNodeId(nextNodeId + 1);
             },
         });
         return null;
@@ -93,7 +95,6 @@ function MapToolPage() {
                         Math.pow(fromNode.position[0] - toNode.position[0], 2) +
                         Math.pow(fromNode.position[1] - toNode.position[1], 2)
                     );
-                    console.log(fromNode.position, toNode.position, distance);
                     return { ...edge, distance };
                 }
                 return edge;
