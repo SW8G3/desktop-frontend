@@ -86,7 +86,10 @@ function MapToolPage() {
                 if (edge.from === nodeId || edge.to === nodeId) {
                     const fromNode = nodes.find((n) => n.id === edge.from);
                     const toNode = nodes.find((n) => n.id === edge.to);
-                    const distance = L.latLng(fromNode.position).distanceTo(L.latLng(toNode.position));
+                    const distance = Math.sqrt(
+                        Math.pow(fromNode.position[0] - toNode.position[0], 2) +
+                        Math.pow(fromNode.position[1] - toNode.position[1], 2)
+                    );
                     return { ...edge, distance };
                 }
                 return edge;
@@ -187,7 +190,7 @@ function MapToolPage() {
                     <div className="edge-menu">
                         <p>Edge selected</p>
                         <button onClick={handleDeleteEdge}>Delete Edge</button>
-                        <button>Edge distance {(edges[selectedEdge].distance / 10000).toFixed(1)}</button>
+                        <button>Edge distance {(edges[selectedEdge].distance).toFixed(1)}</button>
                     </div>
                 )}
             </div>
