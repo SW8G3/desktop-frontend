@@ -2,6 +2,13 @@ import { useState } from "react";
 import { MapContainer, ImageOverlay, Marker, Popup, Polyline, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { uploadGraphData } from "../API/GraphAPI";
+import MenuBar from "../Components/MenuBar";
+
+const nodeIcon = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/6162/6162025.png",
+  iconSize: [30, 30],
+});
 
 function MapToolPage() {
   const bounds = [
@@ -88,8 +95,18 @@ function MapToolPage() {
     }
   };
 
+  const handleUpload = async () => {
+    try {
+        const response = await uploadGraphData(nodes, edges);
+        console.log(response);
+    } catch (error) {
+        console.error(error);
+    }
+  };
+
   return (
     <>
+        <MenuBar onUpload={handleUpload}/>
       <div className="map-container">
         <MapContainer style={{ width: "100%", height: "100%" }} bounds={bounds} crs={L.CRS.Simple}>
           <ImageOverlay url="/2sal.png" bounds={bounds} />
@@ -103,6 +120,7 @@ function MapToolPage() {
               key={node.id}
               position={node.position}
               draggable={true}
+                icon={nodeIcon}
               eventHandlers={{
                 click: () => handleNodeClick(node),
                 dragend: (e) => handleDragEnd(e, node.id),
