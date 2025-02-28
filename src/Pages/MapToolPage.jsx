@@ -5,10 +5,13 @@ import L from "leaflet";
 import { uploadGraphData } from "../API/GraphAPI";
 import MenuBar from "../Components/MenuBar";
 
-const nodeIcon = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/6162/6162025.png",
-  iconSize: [30, 30],
-});
+const nodeIcon = new L.DivIcon({
+    html: `<img src="https://cdn-icons-png.flaticon.com/512/6162/6162025.png" style="width: 30px; height: 30px;" />`,
+    className: 'custom-div-icon', // Add a custom class for additional styling if needed
+    iconSize: [30, 30], // Size of the icon
+    iconAnchor: [15, 15], // Point of the icon which will correspond to marker's location
+    popupAnchor: [0, -15], // Point from which the popup should open relative to the iconAnchor
+  });
 
 function MapToolPage() {
   const bounds = [
@@ -120,7 +123,7 @@ function MapToolPage() {
               key={node.id}
               position={node.position}
               draggable={true}
-                icon={nodeIcon}
+              icon={nodeIcon}
               eventHandlers={{
                 click: () => handleNodeClick(node),
                 dragend: (e) => handleDragEnd(e, node.id),

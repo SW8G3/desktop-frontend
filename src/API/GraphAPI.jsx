@@ -65,8 +65,10 @@ function buildGraphObject(nodes, edges) {
 const uploadGraphData = async (nodes, edges) => {
     console.log("Uploading graph data...");
     console.log({ nodes, edges });
-    console.log({ graph });
+    
     const graphData = buildGraphObject(nodes, edges);
+    
+    console.log({ graphData });
     try {
         const response = await api.post("/graph", graphData);
         return response.data;
