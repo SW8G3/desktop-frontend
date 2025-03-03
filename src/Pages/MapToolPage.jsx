@@ -202,19 +202,18 @@ function MapToolPage() {
                                     },
                                 }}
                                 className="edge-click-area" // Add a class to identify edge click area
-                            />
+                            >
+                                <Popup>
+                                    <div>
+                                        <p>Edge from Node {edge.from} to Node {edge.to}</p>
+                                        <p>Distance: {edge.distance.toFixed(1)}</p>
+                                        <button onClick={handleDeleteEdge}>Delete Edge</button>
+                                    </div>
+                                </Popup>
+                            </Polyline>
                         );
                     })}
                 </MapContainer>
-
-                {/* Edge Deletion Menu */}
-                {selectedEdge !== null && (
-                    <div className="edge-menu">
-                        <p>Edge selected</p>
-                        <button onClick={handleDeleteEdge}>Delete Edge</button>
-                        <button>Edge distance {(edges[selectedEdge].distance).toFixed(1)}</button>
-                    </div>
-                )}
             </div>
         </>
     );
