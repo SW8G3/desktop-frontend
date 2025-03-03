@@ -44,7 +44,7 @@ function MapToolPage() {
                 if (e.originalEvent.target.tagName === "BUTTON" || e.originalEvent.target.classList.contains("edge-click-area")) {
                     return;
                 }
-                const newNode = { id: nextNodeId, position: [e.latlng.lat, e.latlng.lng], hasCode: false };
+                const newNode = { id: nextNodeId, position: [e.latlng.lat, e.latlng.lng], isWaypoint: false };
                 setNodes([...nodes, newNode]);
                 setNextNodeId(nextNodeId + 1);
             },
