@@ -8,7 +8,7 @@ const api = axios.create({
  * @typedef {Object} Node
  * @property {string} id
  * @property {Array<number>} position
- * @property {boolean} hasCode
+ * @property {boolean} isWaypoint
  */
 
 /** 
@@ -43,7 +43,7 @@ function buildGraphObject(nodes, edges) {
         nodes: nodes.map((node) => ({
             id: node.id,
             position: node.position,
-            hasCode: node.hasCode,
+            isWaypoint: node.isWaypoint,
         })),
         edges: edges.map((edge) => ({
             from: edge.from,
