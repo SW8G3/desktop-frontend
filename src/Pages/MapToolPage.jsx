@@ -36,7 +36,7 @@ function MapToolPage() {
                 if (e.originalEvent.target.tagName === "BUTTON" || e.originalEvent.target.classList.contains("edge-click-area")) {
                     return;
                 }
-                const newNode = { id: nextNodeId, position: [e.latlng.lat, e.latlng.lng] };
+                const newNode = { id: nextNodeId, position: [e.latlng.lat, e.latlng.lng], hasCode: false };
                 setNodes([...nodes, newNode]);
                 setNextNodeId(nextNodeId + 1);
             },
@@ -137,6 +137,12 @@ function MapToolPage() {
         }
     };
 
+    const toggleIsWaypoint = (nodeId) => {
+        setNodes((prevNodes) =>
+            prevNodes.map((node) => (node.id === nodeId ? { ...node, isWaypoint: !node.isWaypoint } : node))
+        );
+    }
+
     return (
         <>
             <MenuBar onUpload={handleUpload} />
@@ -163,6 +169,9 @@ function MapToolPage() {
                                 <div>
                                     <p>Node {node.id}</p>
                                     <button onClick={(e) => handleDeleteNode(e, node.id)}>Delete</button>
+                                    <button onClick={() => toggleIsWaypoint(node.id)}>
+                                        {node.isWaypoint ? "Set Waypoint" : "Remove Waypoint"}
+                                    </button>
                                 </div>
                             </Popup>
                         </Marker>
