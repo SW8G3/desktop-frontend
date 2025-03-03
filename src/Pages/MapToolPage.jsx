@@ -13,6 +13,14 @@ const nodeIcon = new L.DivIcon({
     popupAnchor: [0, -15], // Point from which the popup should open relative to the iconAnchor
 });
 
+const waypointIcon = new L.DivIcon({
+    html: `<img src="https://cdn-icons-png.flaticon.com/512/14035/14035769.png" style="width: 35px; height: 35px;" />`,
+    className: 'custom-div-icon', // Add a custom class for additional styling if needed
+    iconSize: [35, 35], // Size of the icon
+    iconAnchor: [17.5, 17.5], // Point of the icon which will correspond to marker's location
+    popupAnchor: [0, -17.5], // Point from which the popup should open relative to the iconAnchor
+});
+
 function MapToolPage() {
     const map_width = (420 * 350) / 1000; // A3 width in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
     const map_height = (297 * 350) / 1000; // A3 height in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
@@ -159,7 +167,7 @@ function MapToolPage() {
                             key={node.id}
                             position={node.position}
                             draggable={true}
-                            icon={nodeIcon}
+                            icon={node.isWaypoint ? waypointIcon : nodeIcon}
                             eventHandlers={{
                                 click: () => handleNodeClick(node),
                                 dragend: (e) => handleDragEnd(e, node.id),
@@ -170,7 +178,7 @@ function MapToolPage() {
                                     <p>Node {node.id}</p>
                                     <button onClick={(e) => handleDeleteNode(e, node.id)}>Delete</button>
                                     <button onClick={() => toggleIsWaypoint(node.id)}>
-                                        {node.isWaypoint ? "Set Waypoint" : "Remove Waypoint"}
+                                        {node.isWaypoint ? "Remove Waypoint" : "Set Waypoint"}
                                     </button>
                                 </div>
                             </Popup>
