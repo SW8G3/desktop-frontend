@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { uploadGraphData } from "../API/GraphAPI";
 import MenuBar from "../Components/MenuBar";
+import { toast } from "react-hot-toast";
 
 const nodeIcon = new L.DivIcon({
     html: `<img src="https://cdn-icons-png.flaticon.com/512/6162/6162025.png" style="width: 30px; height: 30px;" />`,
@@ -143,6 +144,7 @@ function MapToolPage() {
             console.log(response);
         } catch (error) {
             console.error(error);
+            toast.error("Failed to upload graph data");
         }
     };
 

@@ -62,7 +62,6 @@ const uploadGraphData = async (nodes, edges) => {
         const response = await api.post("/graph", graphData);
         return response.data;
     } catch (error) {
-        console.error(error);
         throw error;
     }
 };
