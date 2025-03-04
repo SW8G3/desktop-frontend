@@ -133,6 +133,7 @@ function MapToolPage() {
         if (selectedEdge !== null) {
             setEdges((prevEdges) => prevEdges.filter((_, index) => index !== selectedEdge));
             setSelectedEdge(null);
+            setSelectedNode(null);
         }
     };
 
