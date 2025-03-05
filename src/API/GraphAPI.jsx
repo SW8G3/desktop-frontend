@@ -44,6 +44,18 @@ function buildGraphObject(nodes, edges) {
         })),
     };
 }
+/**
+ * Download graph data from the server
+ * @returns {Promise<Graph>}
+ */
+const downloadGraphData = async () => {
+    try {
+        const response = await api.get("/graph/download");
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
 
 /**
  * Upload graph data to the server
@@ -59,11 +71,11 @@ const uploadGraphData = async (nodes, edges) => {
 
     console.log({ graphData });
     try {
-        const response = await api.post("/graph", graphData);
+        const response = await api.post("/graph/upload", graphData);
         return response.data;
     } catch (error) {
         throw error;
     }
 };
 
-export { uploadGraphData };
+export { downloadGraphData ,uploadGraphData };

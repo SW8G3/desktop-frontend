@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MapContainer, ImageOverlay, Marker, Popup, Polyline, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { uploadGraphData } from "../API/GraphAPI";
+import { uploadGraphData, downloadGraphData } from "../API/GraphAPI";
 import MenuBar from "../Components/MenuBar";
 import { toast } from "react-hot-toast";
 
@@ -148,6 +148,18 @@ function MapToolPage() {
         }
     };
 
+    const handleDownload = async () => {
+        try {
+            const { nodes, edges } = await downloadGraphData();
+            setNodes(nodes);
+            setEdges(edges);
+            setNextNodeId(nodes.length);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to download graph data");
+        }
+    };
+
     const toggleIsWaypoint = (nodeId) => {
         setNodes((prevNodes) =>
             prevNodes.map((node) => (node.id === nodeId ? { ...node, isWaypoint: !node.isWaypoint } : node))
@@ -156,7 +168,7 @@ function MapToolPage() {
 
     return (
         <>
-            <MenuBar onUpload={handleUpload} />
+            <MenuBar onUpload={handleUpload} onDownload={handleDownload} />
             <div className="map-container">
                 <MapContainer style={{ width: "100%", height: "100%" }} bounds={bounds} crs={L.CRS.Simple}>
                     <ImageOverlay url="/2sal.png" bounds={bounds} />

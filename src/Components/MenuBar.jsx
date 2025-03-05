@@ -1,11 +1,11 @@
 import React from "react";
 import "./MenuBar.css";
 
-function MenuBar({ onUpload }) {
+function MenuBar({ onUpload, onDownload }) {
     return (
         <div className="menu-bar">
         <button onClick={onUpload}>Upload</button>
-        <button className="menu-button">Download</button>
+        <button onClick={onDownload} className="menu-button">Download</button>
         </div>
     );
 }
