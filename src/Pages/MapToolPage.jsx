@@ -153,7 +153,7 @@ function MapToolPage() {
             const { nodes, edges } = await downloadGraphData();
             setNodes(nodes);
             setEdges(edges);
-            setNextNodeId(nodes.length);
+            setNextNodeId(nodes.length+1);
         } catch (error) {
             console.error(error);
             toast.error("Failed to download graph data");
