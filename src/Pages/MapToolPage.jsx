@@ -36,6 +36,24 @@ function MapToolPage() {
     const [selectedNode, setSelectedNode] = useState(null); // Track selected node for edge creation
     const [selectedEdge, setSelectedEdge] = useState(null); // Track selected edge for deletion
     const [nextNodeId, setNextNodeId] = useState(0); // Track next node ID
+    const [availableIds, setAvailableIds] = useState(new Set()); // Track available node IDs
+
+    const generateNextNodeId = () => {
+        if (availableIds.size > 0) {
+            const nextId = Math.min(...availableIds);
+            setAvailableIds((prev) => {
+                const newSet = new Set(prev);
+                newSet.delete(nextId);
+                return newSet;
+            });
+            return nextId;
+        } else {
+            const nextId = nextNodeId;
+            setNextNodeId(nextNodeId + 1);
+            return nextId;
+        }
+    };
+
 
     // Function to add nodes on map click (only if clicking directly on the map)
     function MapClickHandler() {
@@ -45,9 +63,8 @@ function MapToolPage() {
                 if (e.originalEvent.target.tagName === "BUTTON" || e.originalEvent.target.classList.contains("edge-click-area")) {
                     return;
                 }
-                const newNode = { id: nextNodeId, position: [e.latlng.lat, e.latlng.lng], isWaypoint: false };
+                const newNode = { id: generateNextNodeId(), position: [e.latlng.lat, e.latlng.lng], isWaypoint: false };
                 setNodes([...nodes, newNode]);
-                setNextNodeId(nextNodeId + 1);
             },
         });
         return null;
@@ -127,6 +144,8 @@ function MapToolPage() {
         // Remove node and associated edges
         setNodes((prevNodes) => prevNodes.filter((node) => node.id !== nodeId));
         setEdges((prevEdges) => prevEdges.filter((edge) => edge.from !== nodeId && edge.to !== nodeId));
+
+        setAvailableIds((prev) => new Set(prev).add(nodeId));
     };
 
     // Function to delete an edge
@@ -154,6 +173,7 @@ function MapToolPage() {
             setNodes(nodes);
             setEdges(edges);
             setNextNodeId(nodes.length+1);
+            setAvailableIds(new Set());
         } catch (error) {
             console.error(error);
             toast.error("Failed to download graph data");
