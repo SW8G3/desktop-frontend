@@ -16,7 +16,7 @@
     "react-dom": "^19.0.0",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.2.0",
-    "swiper": "^11.2.4",
+    "swiper": "^11.2.5",
     "swiper-react": "^1.0.0"
   },
   "devDependencies": {
