@@ -35,7 +35,7 @@ function MapToolPage() {
     const [edges, setEdges] = useState([]); // Store edges
     const [selectedNode, setSelectedNode] = useState(null); // Track selected node for edge creation
     const [selectedEdge, setSelectedEdge] = useState(null); // Track selected edge for deletion
-    const [nextNodeId, setNextNodeId] = useState(0); // Track next node ID
+    const [nextNodeId, setNextNodeId] = useState(1); // Track next node ID
     const [availableIds, setAvailableIds] = useState(new Set()); // Track available node IDs
 
     const generateNextNodeId = () => {
@@ -95,8 +95,9 @@ function MapToolPage() {
                     Math.pow(fromNode.position[0] - toNode.position[0], 2) +
                     Math.pow(fromNode.position[1] - toNode.position[1], 2)
                 );
-
-                setEdges([...edges, { from: selectedNode.id, to: node.id, distance }]);
+                // Create edge id from concatenating from and to node ids
+                const edgeId = parseInt(`${selectedNode.id}${node.id}`);
+                setEdges([...edges, { id: edgeId, from: selectedNode.id, to: node.id, distance }]);
             }
 
             setSelectedNode(null);
