@@ -36,12 +36,14 @@ function MapToolPage() {
     const [selectedNode, setSelectedNode] = useState(null); // Track selected node for edge creation
     const [selectedEdge, setSelectedEdge] = useState(null); // Track selected edge for deletion
     const [nextNodeId, setNextNodeId] = useState(1); // Track next node ID
-    const [availableIds, setAvailableIds] = useState(new Set()); // Track available node IDs
+    const [availableNodeIds, setAvailableNodeIds] = useState(new Set()); // Track available node IDs
+    const [nextEdgeId, setNextEdgeId] = useState(1); // Track next edge ID
+    const [availableEdgeIds, setAvailableEdgeIds] = useState(new Set()); // Track available edge IDs
 
     const generateNextNodeId = () => {
-        if (availableIds.size > 0) {
-            const nextId = Math.min(...availableIds);
-            setAvailableIds((prev) => {
+        if (availableNodeIds.size > 0) {
+            const nextId = Math.min(...availableNodeIds);
+            setAvailableNodeIds((prev) => {
                 const newSet = new Set(prev);
                 newSet.delete(nextId);
                 return newSet;
@@ -50,6 +52,22 @@ function MapToolPage() {
         } else {
             const nextId = nextNodeId;
             setNextNodeId(nextNodeId + 1);
+            return nextId;
+        }
+    };
+
+    const generateNextEdgeId = () => {
+        if (availableEdgeIds.size > 0) {
+            const nextId = Math.min(...availableEdgeIds);
+            setAvailableEdgeIds((prev) => {
+                const newSet = new Set(prev);
+                newSet.delete(nextId);
+                return newSet;
+            });
+            return nextId;
+        } else {
+            const nextId = nextEdgeId;
+            setNextEdgeId(nextEdgeId + 1);
             return nextId;
         }
     };
@@ -96,8 +114,8 @@ function MapToolPage() {
                     Math.pow(fromNode.position[1] - toNode.position[1], 2)
                 );
                 // Create edge id from concatenating from and to node ids
-                const edgeId = parseInt(`${selectedNode.id}${node.id}`);
-                setEdges([...edges, { id: edgeId, from: selectedNode.id, to: node.id, distance }]);
+                
+                setEdges([...edges, { id: generateNextEdgeId(), from: selectedNode.id, to: node.id, distance }]);
             }
 
             setSelectedNode(null);
@@ -146,7 +164,7 @@ function MapToolPage() {
         setNodes((prevNodes) => prevNodes.filter((node) => node.id !== nodeId));
         setEdges((prevEdges) => prevEdges.filter((edge) => edge.from !== nodeId && edge.to !== nodeId));
 
-        setAvailableIds((prev) => new Set(prev).add(nodeId));
+        setAvailableNodeIds((prev) => new Set(prev).add(nodeId));
     };
 
     // Function to delete an edge
@@ -155,6 +173,7 @@ function MapToolPage() {
             setEdges((prevEdges) => prevEdges.filter((_, index) => index !== selectedEdge));
             setSelectedEdge(null);
             setSelectedNode(null);
+            setAvailableEdgeIds((prev) => new Set(prev).add(selectedEdge.id));
         }
     };
 
@@ -174,7 +193,9 @@ function MapToolPage() {
             setNodes(nodes);
             setEdges(edges);
             setNextNodeId(nodes.length+1);
-            setAvailableIds(new Set());
+            setAvailableNodeIds(new Set());
+            setNextEdgeId(edges.length+1);
+            setAvailableEdgeIds(new Set());
         } catch (error) {
             console.error(error);
             toast.error("Failed to download graph data");
