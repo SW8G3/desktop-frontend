@@ -170,7 +170,7 @@ function MapToolPage() {
     // Function to delete an edge
     const handleDeleteEdge = () => {
         if (selectedEdge !== null) {
-            setEdges((prevEdges) => prevEdges.filter((_, index) => index !== selectedEdge));
+            setEdges((prevEdges) => prevEdges.filter((edge) => edge.id !== selectedEdge.id));
             setSelectedEdge(null);
             setSelectedNode(null);
             setAvailableEdgeIds((prev) => new Set(prev).add(selectedEdge.id));
