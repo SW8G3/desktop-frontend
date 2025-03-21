@@ -243,19 +243,19 @@ function MapToolPage() {
                     ))}
 
                     {/* Render Edges */}
-                    {edges.map((edge, index) => {
+                    {edges.map((edge) => {
                         const fromPos = getNodePosition(edge.nodeA);
                         const toPos = getNodePosition(edge.nodeB);
 
                         return (
                             <Polyline
-                                key={index}
+                                key={edge.id}
                                 positions={[fromPos, toPos]}
                                 color={"blue"}
                                 eventHandlers={{
                                     click: (e) => {
                                         e.originalEvent.stopPropagation(); // Stop map click event
-                                        setSelectedEdge(index);
+                                        setSelectedEdge(edge);
                                     },
                                 }}
                                 className="edge-click-area" // Add a class to identify edge click area
