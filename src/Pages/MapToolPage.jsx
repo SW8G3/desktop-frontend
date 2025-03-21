@@ -101,8 +101,8 @@ function MapToolPage() {
             // Check if the edge already exists
             const edgeExists = edges.some(
                 (edge) =>
-                    (edge.from === selectedNode.id && edge.to === node.id) ||
-                    (edge.from === node.id && edge.to === selectedNode.id)
+                    (edge.nodeA === selectedNode.id && edge.nodeB === node.id) ||
+                    (edge.nodeA === node.id && edge.nodeB === selectedNode.id)
             );
 
             if (!edgeExists) {
@@ -115,7 +115,7 @@ function MapToolPage() {
                 );
 
                 
-                setEdges([...edges, { id: generateNextEdgeId(), from: selectedNode.id, to: node.id, distance }]);
+                setEdges([...edges, { id: generateNextEdgeId(), nodeA: selectedNode.id, nodeB: node.id, distance }]);
             }
 
             setSelectedNode(null);
@@ -133,9 +133,9 @@ function MapToolPage() {
         // Update distances for edges connected to the moved node
         setEdges((prevEdges) =>
             prevEdges.map((edge) => {
-                if (edge.from === nodeId || edge.to === nodeId) {
-                    const fromNode = edge.from === nodeId ? { ...edge, position: [lat, lng] } : nodes.find((n) => n.id === edge.from);
-                    const toNode = edge.to === nodeId ? { ...edge, position: [lat, lng] } : nodes.find((n) => n.id === edge.to);
+                if (edge.nodeA === nodeId || edge.nodeB === nodeId) {
+                    const fromNode = edge.nodeA === nodeId ? { ...edge, position: [lat, lng] } : nodes.find((n) => n.id === edge.nodeA);
+                    const toNode = edge.nodeB === nodeId ? { ...edge, position: [lat, lng] } : nodes.find((n) => n.id === edge.nodeB);
                     const distance = Math.sqrt(
                         Math.pow(fromNode.position[0] - toNode.position[0], 2) +
                         Math.pow(fromNode.position[1] - toNode.position[1], 2)
@@ -162,7 +162,7 @@ function MapToolPage() {
 
         // Remove node and associated edges
         setNodes((prevNodes) => prevNodes.filter((node) => node.id !== nodeId));
-        setEdges((prevEdges) => prevEdges.filter((edge) => edge.from !== nodeId && edge.to !== nodeId));
+        setEdges((prevEdges) => prevEdges.filter((edge) => edge.nodeA !== nodeId && edge.nodeB !== nodeId));
 
         setAvailableNodeIds((prev) => new Set(prev).add(nodeId));
     };
@@ -244,8 +244,8 @@ function MapToolPage() {
 
                     {/* Render Edges */}
                     {edges.map((edge, index) => {
-                        const fromPos = getNodePosition(edge.from);
-                        const toPos = getNodePosition(edge.to);
+                        const fromPos = getNodePosition(edge.nodeA);
+                        const toPos = getNodePosition(edge.nodeB);
 
                         return (
                             <Polyline
@@ -262,7 +262,7 @@ function MapToolPage() {
                             >
                                 <Popup>
                                     <div>
-                                        <p>Edge from Node {edge.from} to Node {edge.to}</p>
+                                        <p>Edge from Node {edge.nodeA} to Node {edge.nodeB}</p>
                                         <p>Distance: {edge.distance.toFixed(1)}</p>
                                         <button onClick={handleDeleteEdge}>Delete Edge</button>
                                     </div>

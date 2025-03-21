@@ -13,8 +13,8 @@ const api = axios.create({
 
 /** 
  * @typedef {Object} Edge
- * @property {number} from
- * @property {number} to
+ * @property {number} nodeA
+ * @property {number} nodeB
  * @property {number} distance
  */
 
@@ -39,8 +39,8 @@ function buildGraphObject(nodes, edges) {
         })),
         edges: edges.map((edge) => ({
             id: edge.id,
-            from: edge.from,
-            to: edge.to,
+            nodeA: edge.nodeA,
+            nodeB: edge.nodeB,
             distance: edge.distance,
         })),
     };
