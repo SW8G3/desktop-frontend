@@ -4,7 +4,6 @@ import jest from 'eslint-plugin-jest';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import cypress from 'eslint-plugin-cypress';
 
 export default [
   { ignores: ['dist'] },
@@ -46,7 +45,7 @@ export default [
     },
   },
   {
-    files: ['__test__/*', '**/*.test.js'],
+    files: ['tests/*', '**/*.test.js'],
     plugins: { jest },
     rules: {
       ...jest.configs.recommended.rules,
@@ -56,32 +55,6 @@ export default [
         ...globals.jest,
       }
     }
-  },
-  {
-    files: ['**/cypress/**/*', '**/*.cy.js'], // Cypress-specific files
-    plugins: { cypress },
-    languageOptions: {
-      globals: {
-        cy: 'readonly', // Adding Cypress global objects
-        Cypress: 'readonly',
-        before: 'readonly',
-        beforeEach: 'readonly',
-        after: 'readonly',
-        afterEach: 'readonly',
-        describe: 'readonly',
-        it: 'readonly',
-        expect: 'readonly',
-      },
-    },
-    rules: {
-      ...cypress.configs.recommended.rules,
-    },
-  },
-  {
-    files: ['cypress.config.js'],
-    languageOptions: {
-      globals: globals.node,
-    },
   },
   pluginJs.configs.recommended,
 ];
