@@ -35,13 +35,15 @@ function MapToolPage() {
     const [edges, setEdges] = useState([]); // Store edges
     const [selectedNode, setSelectedNode] = useState(null); // Track selected node for edge creation
     const [selectedEdge, setSelectedEdge] = useState(null); // Track selected edge for deletion
-    const [nextNodeId, setNextNodeId] = useState(0); // Track next node ID
-    const [availableIds, setAvailableIds] = useState(new Set()); // Track available node IDs
+    const [nextNodeId, setNextNodeId] = useState(1); // Track next node ID
+    const [availableNodeIds, setAvailableNodeIds] = useState(new Set()); // Track available node IDs
+    const [nextEdgeId, setNextEdgeId] = useState(1); // Track next edge ID
+    const [availableEdgeIds, setAvailableEdgeIds] = useState(new Set()); // Track available edge IDs
 
     const generateNextNodeId = () => {
-        if (availableIds.size > 0) {
-            const nextId = Math.min(...availableIds);
-            setAvailableIds((prev) => {
+        if (availableNodeIds.size > 0) {
+            const nextId = Math.min(...availableNodeIds);
+            setAvailableNodeIds((prev) => {
                 const newSet = new Set(prev);
                 newSet.delete(nextId);
                 return newSet;
@@ -50,6 +52,22 @@ function MapToolPage() {
         } else {
             const nextId = nextNodeId;
             setNextNodeId(nextNodeId + 1);
+            return nextId;
+        }
+    };
+
+    const generateNextEdgeId = () => {
+        if (availableEdgeIds.size > 0) {
+            const nextId = Math.min(...availableEdgeIds);
+            setAvailableEdgeIds((prev) => {
+                const newSet = new Set(prev);
+                newSet.delete(nextId);
+                return newSet;
+            });
+            return nextId;
+        } else {
+            const nextId = nextEdgeId;
+            setNextEdgeId(nextEdgeId + 1);
             return nextId;
         }
     };
@@ -146,15 +164,16 @@ function MapToolPage() {
         setNodes((prevNodes) => prevNodes.filter((node) => node.id !== nodeId));
         setEdges((prevEdges) => prevEdges.filter((edge) => edge.from !== nodeId && edge.to !== nodeId));
 
-        setAvailableIds((prev) => new Set(prev).add(nodeId));
+        setAvailableNodeIds((prev) => new Set(prev).add(nodeId));
     };
 
     // Function to delete an edge
     const handleDeleteEdge = () => {
         if (selectedEdge !== null) {
-            setEdges((prevEdges) => prevEdges.filter((_, index) => index !== selectedEdge));
+            setEdges((prevEdges) => prevEdges.filter((edge) => edge.id !== selectedEdge.id));
             setSelectedEdge(null);
             setSelectedNode(null);
+            setAvailableEdgeIds((prev) => new Set(prev).add(selectedEdge.id));
         }
     };
 

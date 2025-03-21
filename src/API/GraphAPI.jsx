@@ -38,6 +38,7 @@ function buildGraphObject(nodes, edges) {
             isWaypoint: node.isWaypoint,
         })),
         edges: edges.map((edge) => ({
+            id: edge.id,
             from: edge.from,
             to: edge.to,
             distance: edge.distance,
