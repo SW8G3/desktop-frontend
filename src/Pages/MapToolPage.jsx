@@ -96,7 +96,8 @@ function MapToolPage() {
                     Math.pow(fromNode.position[1] - toNode.position[1], 2)
                 );
 
-                setEdges([...edges, { from: selectedNode.id, to: node.id, distance }]);
+                
+                setEdges([...edges, { id: generateNextEdgeId(), from: selectedNode.id, to: node.id, distance }]);
             }
 
             setSelectedNode(null);
@@ -172,8 +173,10 @@ function MapToolPage() {
             const { nodes, edges } = await downloadGraphData();
             setNodes(nodes);
             setEdges(edges);
-            setNextNodeId(nodes.length+1);
-            setAvailableIds(new Set());
+            setNextNodeId(nodes.length + 1);
+            setAvailableNodeIds(new Set());
+            setNextEdgeId(edges.length + 1);
+            setAvailableEdgeIds(new Set());
         } catch (error) {
             console.error(error);
             toast.error("Failed to download graph data");
