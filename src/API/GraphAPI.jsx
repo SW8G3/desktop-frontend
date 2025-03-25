@@ -25,26 +25,7 @@ const api = axios.create({
  * @property {Array<Edge>} edges
  */
 
-/** 
- * @param {Array<Node>} nodes
- * @param {Array<Edge>} edges
- * @returns {Graph}
- */
-function buildGraphObject(nodes, edges) {
-    return {
-        nodes: nodes.map((node) => ({
-            id: node.id,
-            position: node.position,
-            isWaypoint: node.isWaypoint,
-        })),
-        edges: edges.map((edge) => ({
-            id: edge.id,
-            nodeA: edge.nodeA,
-            nodeB: edge.nodeB,
-            distance: edge.distance,
-        })),
-    };
-}
+
 /**
  * Download graph data from the server
  * @returns {Promise<Graph>}
@@ -68,7 +49,7 @@ const uploadGraphData = async (nodes, edges) => {
     console.log("Uploading graph data...");
     console.log({ nodes, edges });
 
-    const graphData = buildGraphObject(nodes, edges);
+    const graphData = { nodes, edges };
 
     console.log({ graphData });
     try {
