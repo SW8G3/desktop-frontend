@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import "./MenuBar.css";
 
 function MenuBar({ onUpload, onDownload }) {
@@ -9,5 +10,10 @@ function MenuBar({ onUpload, onDownload }) {
         </div>
     );
 }
+
+MenuBar.propTypes = {
+    onUpload: PropTypes.func.isRequired,
+    onDownload: PropTypes.func.isRequired,
+};
 
 export default MenuBar;
