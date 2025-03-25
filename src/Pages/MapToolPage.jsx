@@ -277,6 +277,26 @@ function MapToolPage() {
                                             {edge.isObstructed ? "Mark as Unobstructed" : "Mark as Obstructed"}
                                         </button>
                                         <button onClick={handleDeleteEdge}>Delete Edge</button>
+                                        <div>
+                                            <label htmlFor={`clearance-${edge.id}`}>Clearance Level:</label>
+                                            <select
+                                                id={`clearance-${edge.id}`}
+                                                value={edge.clearance || 0} // Default to 0 if clearance is not set
+                                                onChange={(e) => {
+                                                    const newClearance = parseInt(e.target.value, 10);
+                                                    setEdges((prevEdges) =>
+                                                        prevEdges.map((edgeItem) =>
+                                                            edgeItem.id === edge.id ? { ...edgeItem, clearance: newClearance } : edgeItem
+                                                        )
+                                                    );
+                                                }}
+                                            >
+                                                <option value={0}>0</option>
+                                                <option value={1}>1</option>
+                                                <option value={2}>2</option>
+                                                <option value={3}>3</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </Popup>
                             </Polyline>
