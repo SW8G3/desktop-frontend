@@ -249,9 +249,9 @@ function MapToolPage() {
 
                         return (
                             <Polyline
-                                key={edge.id}
+                                key={`${edge.id}-${edge.isObstructed}`} // Include isObstructed in the key to force re-render
                                 positions={[fromPos, toPos]}
-                                color={"blue"}
+                                color={edge.isObstructed ? "red" : "blue"} // Red if obstructed, blue otherwise
                                 eventHandlers={{
                                     click: (e) => {
                                         e.originalEvent.stopPropagation(); // Stop map click event
