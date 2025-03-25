@@ -8,7 +8,7 @@ dotenv.config();
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: process.env.VITE_PORT || 3000,
+    port: process.env.VITE_PORT || 3000,
   },
   define: {
     VITE_API_URL: JSON.stringify(process.env.VITE_API_URL),
