@@ -233,6 +233,7 @@ function MapToolPage() {
                             <Popup>
                                 <div>
                                     <p>Node {node.id}</p>
+                                    <p>Search tags: {node.searchTags?.join(", ") || "None"}</p>
                                     <button onClick={(e) => handleDeleteNode(e, node.id)}>Delete</button>
                                     <button onClick={() => toggleIsWaypoint(node.id)}>
                                         {node.isWaypoint ? "Remove Waypoint" : "Set Waypoint"}
