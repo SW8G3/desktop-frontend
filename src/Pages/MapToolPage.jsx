@@ -114,7 +114,7 @@ function MapToolPage() {
                     Math.pow(fromNode.position[1] - toNode.position[1], 2)
                 );
 
-                
+
                 setEdges([...edges, { id: generateNextEdgeId(), nodeA: selectedNode.id, nodeB: node.id, distance }]);
             }
 
@@ -264,6 +264,18 @@ function MapToolPage() {
                                     <div>
                                         <p>Edge from Node {edge.nodeA} to Node {edge.nodeB}</p>
                                         <p>Distance: {edge.distance.toFixed(1)}</p>
+                                        <p>Obstructed: {edge.isObstructed ? "Yes" : "No"}</p>
+                                        <button
+                                            onClick={() => {
+                                                setEdges((prevEdges) =>
+                                                    prevEdges.map((e) =>
+                                                        e.id === edge.id ? { ...e, isObstructed: !e.isObstructed } : e
+                                                    )
+                                                );
+                                            }}
+                                        >
+                                            {edge.isObstructed ? "Mark as Unobstructed" : "Mark as Obstructed"}
+                                        </button>
                                         <button onClick={handleDeleteEdge}>Delete Edge</button>
                                     </div>
                                 </Popup>

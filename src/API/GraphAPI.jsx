@@ -79,4 +79,4 @@ const uploadGraphData = async (nodes, edges) => {
     }
 };
 
-export { downloadGraphData ,uploadGraphData };
+export { downloadGraphData, uploadGraphData };
