@@ -263,8 +263,8 @@ function MapToolPage() {
                                         ${edge.clearance || 0}
                                     </div>`,
                             className: "clearance-label",
-                            iconSize: [30, 15],
-                            iconAnchor: [15, 7.5],
+                            iconSize: [15, 7.5], // 50% smaller than the original size
+                            iconAnchor: [7.5, 3.75], // Adjust anchor to keep it centered
                         });
 
                         console.log(clearanceLabel);
