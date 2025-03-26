@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { MapContainer, ImageOverlay, Marker, Popup, Polyline, useMapEvents } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import { uploadGraphData, downloadGraphData } from "../API/GraphAPI";
-import MenuBar from "../Components/MenuBar";
-import { toast } from "react-hot-toast";
+import { useState } from 'react';
+import { MapContainer, ImageOverlay, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import { uploadGraphData, downloadGraphData } from '../API/GraphAPI';
+import MenuBar from '../Components/MenuBar';
+import { toast } from 'react-hot-toast';
 
 const nodeIcon = new L.DivIcon({
-    html: `<img src="https://cdn-icons-png.flaticon.com/512/6162/6162025.png" style="width: 30px; height: 30px;" />`,
+    html: '<img src=\'https://cdn-icons-png.flaticon.com/512/6162/6162025.png\' style=\'width: 30px; height: 30px;\' />',
     className: 'custom-div-icon', // Add a custom class for additional styling if needed
     iconSize: [30, 30], // Size of the icon
     iconAnchor: [15, 15], // Point of the icon which will correspond to marker's location
@@ -15,7 +15,7 @@ const nodeIcon = new L.DivIcon({
 });
 
 const waypointIcon = new L.DivIcon({
-    html: `<img src="https://cdn-icons-png.flaticon.com/512/14035/14035769.png" style="width: 35px; height: 35px;" />`,
+    html: '<img src=\'https://cdn-icons-png.flaticon.com/512/14035/14035769.png\' style=\'width: 35px; height: 35px;\' />',
     className: 'custom-div-icon', // Add a custom class for additional styling if needed
     iconSize: [35, 35], // Size of the icon
     iconAnchor: [17.5, 17.5], // Point of the icon which will correspond to marker's location
@@ -78,7 +78,7 @@ function MapToolPage() {
         useMapEvents({
             click: (e) => {
                 // Prevent node creation if clicking an edge or button
-                if (e.originalEvent.target.tagName === "BUTTON" || e.originalEvent.target.classList.contains("edge-click-area")) {
+                if (e.originalEvent.target.tagName === 'BUTTON' || e.originalEvent.target.classList.contains('edge-click-area')) {
                     return;
                 }
                 const newNode = { id: generateNextNodeId(), position: [e.latlng.lat, e.latlng.lng], isWaypoint: false };
@@ -183,7 +183,7 @@ function MapToolPage() {
             console.log(response);
         } catch (error) {
             console.error(error);
-            toast.error("Failed to upload graph data");
+            toast.error('Failed to upload graph data');
         }
     };
 
@@ -198,7 +198,7 @@ function MapToolPage() {
             setAvailableEdgeIds(new Set());
         } catch (error) {
             console.error(error);
-            toast.error("Failed to download graph data");
+            toast.error('Failed to download graph data');
         }
     };
 
@@ -206,14 +206,14 @@ function MapToolPage() {
         setNodes((prevNodes) =>
             prevNodes.map((node) => (node.id === nodeId ? { ...node, isWaypoint: !node.isWaypoint } : node))
         );
-    }
+    };
 
     return (
         <>
             <MenuBar onUpload={handleUpload} onDownload={handleDownload} />
-            <div className="map-container">
-                <MapContainer style={{ width: "100%", height: "100%" }} bounds={bounds} crs={L.CRS.Simple}>
-                    <ImageOverlay url="/2sal.png" bounds={bounds} />
+            <div className='map-container'>
+                <MapContainer style={{ width: '100%', height: '100%' }} bounds={bounds} crs={L.CRS.Simple}>
+                    <ImageOverlay url='/2sal.png' bounds={bounds} />
 
                     {/* Handle Clicks to Add Nodes */}
                     <MapClickHandler />
@@ -235,7 +235,7 @@ function MapToolPage() {
                                     <p>Node {node.id}</p>
                                     <button onClick={(e) => handleDeleteNode(e, node.id)}>Delete</button>
                                     <button onClick={() => toggleIsWaypoint(node.id)}>
-                                        {node.isWaypoint ? "Remove Waypoint" : "Set Waypoint"}
+                                        {node.isWaypoint ? 'Remove Waypoint' : 'Set Waypoint'}
                                     </button>
                                 </div>
                             </Popup>
@@ -251,14 +251,14 @@ function MapToolPage() {
                             <Polyline
                                 key={edge.id}
                                 positions={[fromPos, toPos]}
-                                color={"blue"}
+                                color={'blue'}
                                 eventHandlers={{
                                     click: (e) => {
                                         e.originalEvent.stopPropagation(); // Stop map click event
                                         setSelectedEdge(edge);
                                     },
                                 }}
-                                className="edge-click-area" // Add a class to identify edge click area
+                                className='edge-click-area' // Add a class to identify edge click area
                             >
                                 <Popup>
                                     <div>
