@@ -1,0 +1,3 @@
+.clearance-label {
+    pointer-events: none; /* Prevent interaction with the label */
+}
