@@ -1,5 +1,7 @@
-import './MenuBar.css';
-import PropTypes from 'prop-types';
+
+import React from "react";
+import PropTypes from "prop-types";
+import "./MenuBar.css";
 
 function MenuBar({ onUpload, onDownload }) {
     return (
