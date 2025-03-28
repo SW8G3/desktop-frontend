@@ -1,5 +1,7 @@
+import React from "react";
 import { useState } from "react";
 import { MapContainer, ImageOverlay, Marker, Popup, Polyline, useMapEvents } from "react-leaflet";
+import "./MapToolPage.css";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { uploadGraphData, downloadGraphData } from "../API/GraphAPI";
@@ -114,7 +116,7 @@ function MapToolPage() {
                     Math.pow(fromNode.position[1] - toNode.position[1], 2)
                 );
 
-                
+
                 setEdges([...edges, { id: generateNextEdgeId(), nodeA: selectedNode.id, nodeB: node.id, distance }]);
             }
 
@@ -233,6 +235,7 @@ function MapToolPage() {
                             <Popup>
                                 <div>
                                     <p>Node {node.id}</p>
+                                    <p>Search tags: {node.searchTags?.join(", ") || "None"}</p>
                                     <button onClick={(e) => handleDeleteNode(e, node.id)}>Delete</button>
                                     <button onClick={() => toggleIsWaypoint(node.id)}>
                                         {node.isWaypoint ? "Remove Waypoint" : "Set Waypoint"}
@@ -247,27 +250,83 @@ function MapToolPage() {
                         const fromPos = getNodePosition(edge.nodeA);
                         const toPos = getNodePosition(edge.nodeB);
 
+                        // Calculate the midpoint of the edge
+                        const midPoint = [
+                            (fromPos[0] + toPos[0]) / 2,
+                            (fromPos[1] + toPos[1]) / 2,
+                        ];
+
+                        // Create a DivIcon for the clearance label
+                        // Create a DivIcon for the clearance label
+                        const clearanceLabel = new L.DivIcon({
+                            html: `<div style="background-color: white; color: black; padding: 2px 5px; border: 1px solid black; border-radius: 3px; font-size: 12px; text-align: center;">
+                                        ${edge.clearance || 0}
+                                    </div>`,
+                            className: "clearance-label",
+                            iconSize: [15, 7.5], // 50% smaller than the original size
+                            iconAnchor: [7.5, 3.75], // Adjust anchor to keep it centered
+                        });
+
+                        console.log(clearanceLabel);
+
                         return (
-                            <Polyline
-                                key={edge.id}
-                                positions={[fromPos, toPos]}
-                                color={"blue"}
-                                eventHandlers={{
-                                    click: (e) => {
-                                        e.originalEvent.stopPropagation(); // Stop map click event
-                                        setSelectedEdge(edge);
-                                    },
-                                }}
-                                className="edge-click-area" // Add a class to identify edge click area
-                            >
-                                <Popup>
-                                    <div>
-                                        <p>Edge from Node {edge.nodeA} to Node {edge.nodeB}</p>
-                                        <p>Distance: {edge.distance.toFixed(1)}</p>
-                                        <button onClick={handleDeleteEdge}>Delete Edge</button>
-                                    </div>
-                                </Popup>
-                            </Polyline>
+                            <React.Fragment key={`${edge.id}-${edge.isObstructed}`}>
+                                {/* Render the edge as a Polyline */}
+                                <Polyline
+                                    positions={[fromPos, toPos]}
+                                    color={edge.isObstructed ? "red" : "blue"} // Red if obstructed, blue otherwise
+                                    eventHandlers={{
+                                        click: (e) => {
+                                            e.originalEvent.stopPropagation(); // Stop map click event
+                                            setSelectedEdge(edge);
+                                        },
+                                    }}
+                                    className="edge-click-area" // Add a class to identify edge click area
+                                >
+                                    <Popup>
+                                        <div>
+                                            <p>Edge from Node {edge.nodeA} to Node {edge.nodeB}</p>
+                                            <p>Distance: {edge.distance.toFixed(1)}</p>
+                                            <p>Obstructed: {edge.isObstructed ? "Yes" : "No"}</p>
+                                            <button
+                                                onClick={() => {
+                                                    setEdges((prevEdges) =>
+                                                        prevEdges.map((e) =>
+                                                            e.id === edge.id ? { ...e, isObstructed: !e.isObstructed } : e
+                                                        )
+                                                    );
+                                                }}
+                                            >
+                                                {edge.isObstructed ? "Mark as Unobstructed" : "Mark as Obstructed"}
+                                            </button>
+                                            <button onClick={handleDeleteEdge}>Delete Edge</button>
+                                            <div>
+                                                <label htmlFor={`clearance-${edge.id}`}>Clearance Level:</label>
+                                                <select
+                                                    id={`clearance-${edge.id}`}
+                                                    value={edge.clearance || 0} // Default to 0 if clearance is not set
+                                                    onChange={(e) => {
+                                                        const newClearance = parseInt(e.target.value, 10);
+                                                        setEdges((prevEdges) =>
+                                                            prevEdges.map((edgeItem) =>
+                                                                edgeItem.id === edge.id ? { ...edgeItem, clearance: newClearance } : edgeItem
+                                                            )
+                                                        );
+                                                    }}
+                                                >
+                                                    <option value={0}>0</option>
+                                                    <option value={1}>1</option>
+                                                    <option value={2}>2</option>
+                                                    <option value={3}>3</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </Popup>
+                                </Polyline>
+
+                                {/* Render the clearance label as a Marker */}
+                                <Marker position={midPoint} icon={clearanceLabel} interactive={false} />
+                            </React.Fragment>
                         );
                     })}
                 </MapContainer>
