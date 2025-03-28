@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -31,13 +31,9 @@ const api = axios.create({
  * @returns {Promise<Graph>}
  */
 const downloadGraphData = async () => {
-    try {
-        const response = await api.get("/graph/download");
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-}
+    const response = await api.get('/graph/download');
+    return response.data;
+};
 
 /**
  * Upload graph data to the server
@@ -46,18 +42,14 @@ const downloadGraphData = async () => {
  * @returns {Promise<Object>}
  */
 const uploadGraphData = async (nodes, edges) => {
-    console.log("Uploading graph data...");
+    console.log('Uploading graph data...');
     console.log({ nodes, edges });
 
     const graphData = { nodes, edges };
 
     console.log({ graphData });
-    try {
-        const response = await api.post("/graph/upload", graphData);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await api.post('/graph/upload', graphData);
+    return response.data;
 };
 
 export { downloadGraphData, uploadGraphData };
