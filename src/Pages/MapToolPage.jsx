@@ -280,7 +280,10 @@ function MapToolPage() {
                                                     borderRadius: '3px',
                                                     cursor: 'pointer',
                                                 }}
-                                                onClick={() => handleDeleteSearchTag(node.id, tag)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Prevent the click from propagating to the map
+                                                    handleDeleteSearchTag(node.id, tag);
+                                                }}
                                             >
                                                 {tag} ✖
                                             </div>
