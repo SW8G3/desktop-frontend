@@ -1,12 +1,12 @@
-import React from "react";
-import { useState } from "react";
-import { MapContainer, ImageOverlay, Marker, Popup, Polyline, useMapEvents } from "react-leaflet";
-import "./MapToolPage.css";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import { uploadGraphData, downloadGraphData } from "../API/GraphAPI";
-import MenuBar from "../Components/MenuBar";
-import { toast } from "react-hot-toast";
+import React from 'react';
+import { useState } from 'react';
+import { MapContainer, ImageOverlay, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet';
+import './MapToolPage.css';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import { uploadGraphData, downloadGraphData } from '../API/GraphAPI';
+import MenuBar from '../Components/MenuBar';
+import { toast } from 'react-hot-toast';
 
 const nodeIcon = new L.DivIcon({
     html: '<img src=\'https://cdn-icons-png.flaticon.com/512/6162/6162025.png\' style=\'width: 30px; height: 30px;\' />',
@@ -204,6 +204,16 @@ function MapToolPage() {
         }
     };
 
+    const handleDeleteSearchTag = (nodeId, tagToDelete) => {
+        setNodes((prevNodes) =>
+            prevNodes.map((node) =>
+                node.id === nodeId
+                    ? { ...node, searchTags: node.searchTags.filter((tag) => tag !== tagToDelete) }
+                    : node
+            )
+        );
+    };
+
     const toggleIsWaypoint = (nodeId) => {
         setNodes((prevNodes) =>
             prevNodes.map((node) => (node.id === nodeId ? { ...node, isWaypoint: !node.isWaypoint } : node))
@@ -235,7 +245,25 @@ function MapToolPage() {
                             <Popup>
                                 <div>
                                     <p>Node {node.id}</p>
-                                    <p>Search tags: {node.searchTags?.join(", ") || "None"}</p>
+                                    <p>Search tags:</p>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                                        {node.searchTags?.map((tag, index) => (
+                                            <div
+                                                key={index}
+                                                style={{
+                                                    display: 'inline-block',
+                                                    padding: '2px 5px',
+                                                    backgroundColor: '#f0f0f0',
+                                                    border: '1px solid #ccc',
+                                                    borderRadius: '3px',
+                                                    cursor: 'pointer',
+                                                }}
+                                                onClick={() => handleDeleteSearchTag(node.id, tag)}
+                                            >
+                                                {tag} ✖
+                                            </div>
+                                        )) || <span>None</span>}
+                                    </div>
                                     <button onClick={(e) => handleDeleteNode(e, node.id)}>Delete</button>
                                     <button onClick={() => toggleIsWaypoint(node.id)}>
                                         {node.isWaypoint ? 'Remove Waypoint' : 'Set Waypoint'}
@@ -259,10 +287,10 @@ function MapToolPage() {
                         // Create a DivIcon for the clearance label
                         // Create a DivIcon for the clearance label
                         const clearanceLabel = new L.DivIcon({
-                            html: `<div style="background-color: white; color: black; padding: 2px 5px; border: 1px solid black; border-radius: 3px; font-size: 12px; text-align: center;">
+                            html: `<div style="background-color: white; color: black; padding: 2px 5px; border: 1px solid black; border-radius: 3px; font-size: 12px; text-align: center;'>
                                         ${edge.clearance || 0}
                                     </div>`,
-                            className: "clearance-label",
+                            className: 'clearance-label',
                             iconSize: [15, 7.5], // 50% smaller than the original size
                             iconAnchor: [7.5, 3.75], // Adjust anchor to keep it centered
                         });
@@ -274,7 +302,7 @@ function MapToolPage() {
                                 {/* Render the edge as a Polyline */}
                                 <Polyline
                                     positions={[fromPos, toPos]}
-                                    color={edge.isObstructed ? "red" : "blue"} // Red if obstructed, blue otherwise
+                                    color={edge.isObstructed ? 'red' : 'blue'} // Red if obstructed, blue otherwise
                                     eventHandlers={{
                                         click: (e) => {
                                             e.originalEvent.stopPropagation(); // Stop map click event
@@ -287,7 +315,7 @@ function MapToolPage() {
                                         <div>
                                             <p>Edge from Node {edge.nodeA} to Node {edge.nodeB}</p>
                                             <p>Distance: {edge.distance.toFixed(1)}</p>
-                                            <p>Obstructed: {edge.isObstructed ? "Yes" : "No"}</p>
+                                            <p>Obstructed: {edge.isObstructed ? 'Yes' : 'No'}</p>
                                             <button
                                                 onClick={() => {
                                                     setEdges((prevEdges) =>
@@ -297,7 +325,7 @@ function MapToolPage() {
                                                     );
                                                 }}
                                             >
-                                                {edge.isObstructed ? "Mark as Unobstructed" : "Mark as Obstructed"}
+                                                {edge.isObstructed ? 'Mark as Unobstructed' : 'Mark as Obstructed'}
                                             </button>
                                             <button onClick={handleDeleteEdge}>Delete Edge</button>
                                             <div>
