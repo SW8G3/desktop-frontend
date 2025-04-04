@@ -265,48 +265,48 @@ function MapToolPage() {
                             }}
                         >
                             <Popup>
-    <div>
-        <p>Node {node.id}</p>
-        <p>Search tags:</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-            {node.searchTags?.map((tag, index) => (
-                <div
-                    key={index}
-                    style={{
-                        display: 'inline-block',
-                        padding: '2px 5px',
-                        backgroundColor: '#f0f0f0',
-                        border: '1px solid #ccc',
-                        borderRadius: '3px',
-                        cursor: 'pointer',
-                    }}
-                    onClick={() => handleDeleteSearchTag(node.id, tag)}
-                >
-                    {tag} ✖
-                </div>
-            )) || <span>None</span>}
-        </div>
-        <div style={{ marginTop: '10px' }}>
-            <input
-                type="text"
-                placeholder="Add a tag"
-                value={node.newTag || ''}
-                onChange={(e) => handleTagInputChange(node.id, e.target.value)}
-                style={{
-                    padding: '5px',
-                    border: '1px solid #ccc',
-                    borderRadius: '3px',
-                    marginRight: '5px',
-                }}
-            />
-            <button onClick={() => handleAddSearchTag(node.id)}>Add Tag</button>
-        </div>
-        <button onClick={(e) => handleDeleteNode(e, node.id)}>Delete</button>
-        <button onClick={() => toggleIsWaypoint(node.id)}>
-            {node.isWaypoint ? 'Remove Waypoint' : 'Set Waypoint'}
-        </button>
-    </div>
-</Popup>
+                                <div>
+                                    <p>Node {node.id}</p>
+                                    <p>Search tags:</p>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                                        {node.searchTags?.map((tag, index) => (
+                                            <div
+                                                key={index}
+                                                style={{
+                                                    display: 'inline-block',
+                                                    padding: '2px 5px',
+                                                    backgroundColor: '#f0f0f0',
+                                                    border: '1px solid #ccc',
+                                                    borderRadius: '3px',
+                                                    cursor: 'pointer',
+                                                }}
+                                                onClick={() => handleDeleteSearchTag(node.id, tag)}
+                                            >
+                                                {tag} ✖
+                                            </div>
+                                        )) || <span>None</span>}
+                                    </div>
+                                    <div style={{ marginTop: '10px' }}>
+                                        <input
+                                            type="text"
+                                            placeholder="Add a tag"
+                                            value={node.newTag || ''}
+                                            onChange={(e) => handleTagInputChange(node.id, e.target.value)}
+                                            style={{
+                                                padding: '5px',
+                                                border: '1px solid #ccc',
+                                                borderRadius: '3px',
+                                                marginRight: '5px',
+                                            }}
+                                        />
+                                        <button onClick={() => handleAddSearchTag(node.id)}>Add Tag</button>
+                                    </div>
+                                    <button onClick={(e) => handleDeleteNode(e, node.id)}>Delete</button>
+                                    <button onClick={() => toggleIsWaypoint(node.id)}>
+                                        {node.isWaypoint ? 'Remove Waypoint' : 'Set Waypoint'}
+                                    </button>
+                                </div>
+                            </Popup>
                         </Marker>
                     ))}
 

@@ -47,6 +47,7 @@ const uploadGraphData = async (nodes, edges) => {
 
     // For each node, delete newTag property
     nodes = nodes.map(node => {
+        // eslint-disable-next-line no-unused-vars
         const { newTag, ...rest } = node;
         return rest;
     });
