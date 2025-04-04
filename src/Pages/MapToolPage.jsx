@@ -74,6 +74,7 @@ function MapToolPage() {
         }
     };
 
+
     // Function to add nodes on map click (only if clicking directly on the map)
     function MapClickHandler() {
         useMapEvents({
@@ -193,12 +194,9 @@ function MapToolPage() {
             const { nodes, edges } = await downloadGraphData();
             setNodes(nodes);
             setEdges(edges);
-    
-            // Recalculate nextEdgeId based on the highest existing edge ID
-            const maxEdgeId = edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) : 0;
-            setNextEdgeId(maxEdgeId + 1);
-    
-            // Clear availableEdgeIds since we are resetting the edges
+            setNextNodeId(nodes.length + 1);
+            setAvailableNodeIds(new Set());
+            setNextEdgeId(edges.length + 1);
             setAvailableEdgeIds(new Set());
         } catch (error) {
             console.error(error);
