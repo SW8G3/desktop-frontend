@@ -45,6 +45,12 @@ const uploadGraphData = async (nodes, edges) => {
     console.log('Uploading graph data...');
     console.log({ nodes, edges });
 
+    // For each node, delete newTag property
+    nodes = nodes.map(node => {
+        const { newTag, ...rest } = node;
+        return rest;
+    });
+
     const graphData = { nodes, edges };
 
     console.log({ graphData });
