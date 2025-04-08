@@ -193,13 +193,18 @@ function MapToolPage() {
             const { nodes, edges } = await downloadGraphData();
             setNodes(nodes);
             setEdges(edges);
-    
+
             // Recalculate nextEdgeId based on the highest existing edge ID
             const maxEdgeId = edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) : 0;
             setNextEdgeId(maxEdgeId + 1);
-    
+
             // Clear availableEdgeIds since we are resetting the edges
             setAvailableEdgeIds(new Set());
+
+            const maxNodeId = nodes.length > 0 ? Math.max(...nodes.map((node) => node.id)) : 0;
+            setNextNodeId(maxNodeId + 1);
+            setAvailableNodeIds(new Set());
+            toast.success('Graph data downloaded successfully');
         } catch (error) {
             console.error(error);
             toast.error('Failed to download graph data');
@@ -336,8 +341,6 @@ function MapToolPage() {
                             iconSize: [15, 7.5], // 50% smaller than the original size
                             iconAnchor: [7.5, 3.75], // Adjust anchor to keep it centered
                         });
-
-                        console.log(clearanceLabel);
 
                         return (
                             <React.Fragment key={`${edge.id}-${edge.isObstructed}`}>
