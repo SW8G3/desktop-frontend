@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -13,8 +13,8 @@ const api = axios.create({
 
 /** 
  * @typedef {Object} Edge
- * @property {number} from
- * @property {number} to
+ * @property {number} nodeA
+ * @property {number} nodeB
  * @property {number} distance
  */
 
@@ -25,37 +25,15 @@ const api = axios.create({
  * @property {Array<Edge>} edges
  */
 
-/** 
- * @param {Array<Node>} nodes
- * @param {Array<Edge>} edges
- * @returns {Graph}
- */
-function buildGraphObject(nodes, edges) {
-    return {
-        nodes: nodes.map((node) => ({
-            id: node.id,
-            position: node.position,
-            isWaypoint: node.isWaypoint,
-        })),
-        edges: edges.map((edge) => ({
-            from: edge.from,
-            to: edge.to,
-            distance: edge.distance,
-        })),
-    };
-}
+
 /**
  * Download graph data from the server
  * @returns {Promise<Graph>}
  */
 const downloadGraphData = async () => {
-    try {
-        const response = await api.get("/graph/download");
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-}
+    const response = await api.get('/graph/download');
+    return response.data;
+};
 
 /**
  * Upload graph data to the server
@@ -64,18 +42,21 @@ const downloadGraphData = async () => {
  * @returns {Promise<Object>}
  */
 const uploadGraphData = async (nodes, edges) => {
-    console.log("Uploading graph data...");
+    console.log('Uploading graph data...');
     console.log({ nodes, edges });
 
-    const graphData = buildGraphObject(nodes, edges);
+    // For each node, delete newTag property
+    nodes = nodes.map(node => {
+        // eslint-disable-next-line no-unused-vars
+        const { newTag, ...rest } = node;
+        return rest;
+    });
+
+    const graphData = { nodes, edges };
 
     console.log({ graphData });
-    try {
-        const response = await api.post("/graph/upload", graphData);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await api.post('/graph/upload', graphData);
+    return response.data;
 };
 
-export { downloadGraphData ,uploadGraphData };
+export { downloadGraphData, uploadGraphData };
