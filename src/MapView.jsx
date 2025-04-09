@@ -12,11 +12,12 @@ function MapView() {
   ];
 
   const navigate = useNavigate(); // Initialize useNavigate
+  const URLPath = window.location.pathname; // Get the current URL path
 
   useEffect(() => {
       const token = localStorage.getItem('token');
       if (!token) {
-          navigate('/login?redirectFrom=' + window.location.pathname); // Redirect to /login with redirectFrom query parameter
+        navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
       }
   }, [navigate]);
 
