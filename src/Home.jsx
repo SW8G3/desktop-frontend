@@ -1,22 +1,21 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
-import './App.css';
 
-function App() {
-  const navigate = useNavigate(); // Initialize useNavigate
+const Home = () => {
+   const navigate = useNavigate(); // Initialize useNavigate
 
-  useEffect(() => {
+   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
         navigate('/login?redirectFrom=' + window.location.pathname); // Redirect to /login with redirectFrom query parameter
     }
 }, [navigate]);
 
-  return (
-      <div>
-        
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}>
+          
       </div>
-  );
-}
+    );
+};
 
-export default App;
+export default Home;
