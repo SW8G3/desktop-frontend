@@ -5,6 +5,7 @@ import Home from './Home.jsx';
 import MapView from './MapView.jsx';
 import LogIn from './LogIn.jsx';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import App from './App.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/login" element={< LogIn />} />
         <Route path="/map" element={<MapView />} />
         <Route path="/" element={<Home />} />
+        <Route path="/app" element={<App />} />
       </Routes>
     </BrowserRouter>
 </StrictMode>,

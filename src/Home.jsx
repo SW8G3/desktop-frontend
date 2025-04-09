@@ -12,7 +12,7 @@ const Home = () => {
 }, [navigate]);
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}>
+      <div>
           
       </div>
     );
