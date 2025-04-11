@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
-import './App.css';
 
-function App() {
+const Home = () => {
   const navigate = useNavigate(); // Initialize useNavigate
   const URLPath = window.location.pathname; // Get the current URL path
 
@@ -13,11 +12,11 @@ function App() {
       }
   }, [navigate]);
 
-  return (
+    return (
       <div>
-        
+          
       </div>
-  );
-}
+    );
+};
 
-export default App;
+export default Home;
