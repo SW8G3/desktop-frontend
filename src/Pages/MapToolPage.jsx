@@ -332,11 +332,10 @@ function MapToolPage() {
                         ];
 
                         // Create a DivIcon for the clearance label
-                        // Create a DivIcon for the clearance label
                         const clearanceLabel = new L.DivIcon({
-                            html: `<div style="background-color: white; color: black; padding: 2px 5px; border: 1px solid black; border-radius: 3px; font-size: 12px; text-align: center;'>
-                                        ${edge.clearance || 0}
-                                    </div>`,
+                            html: `<div style="background-color: white; color: black; padding: 2px 5px; border: 1px solid black; border-radius: 3px; font-size: 12px; text-align: center;">
+                    ${edge.clearance || 0}
+               </div>`,
                             className: 'clearance-label',
                             iconSize: [15, 7.5], // 50% smaller than the original size
                             iconAnchor: [7.5, 3.75], // Adjust anchor to keep it centered
@@ -344,17 +343,19 @@ function MapToolPage() {
 
                         return (
                             <React.Fragment key={`${edge.id}-${edge.isObstructed}`}>
-                                {/* Render the edge as a Polyline */}
+                                {/* Render the invisible hitbox as a Polyline */}
                                 <Polyline
                                     positions={[fromPos, toPos]}
-                                    color={edge.isObstructed ? 'red' : 'blue'} // Red if obstructed, blue otherwise
+                                    color="transparent" // Invisible hitbox
+                                    weight={10} // Increase the weight to make the hitbox larger
                                     eventHandlers={{
                                         click: (e) => {
+                                            e.originalEvent.preventDefault(); // Prevent default behavior
                                             e.originalEvent.stopPropagation(); // Stop map click event
-                                            setSelectedEdge(edge);
+                                            setSelectedEdge(edge); // Select the edge
                                         },
                                     }}
-                                    className="edge-click-area" // Add a class to identify edge click area
+                                    className="edge-hitbox" // Optional: Add a class for debugging or styling
                                 >
                                     <Popup>
                                         <div>
@@ -396,6 +397,14 @@ function MapToolPage() {
                                         </div>
                                     </Popup>
                                 </Polyline>
+
+                                {/* Render the visible edge as a Polyline */}
+                                <Polyline
+                                    positions={[fromPos, toPos]}
+                                    color={edge.isObstructed ? 'red' : 'blue'} // Red if obstructed, blue otherwise
+                                    weight={3} // Normal weight for the visible edge
+                                    className="edge-click-area"
+                                />
 
                                 {/* Render the clearance label as a Marker */}
                                 <Marker position={midPoint} icon={clearanceLabel} interactive={false} />
