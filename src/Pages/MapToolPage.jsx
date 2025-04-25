@@ -26,7 +26,7 @@ const waypointIcon = new L.DivIcon({
 
 function MapToolPage() {
     const map_width = (420 * 350) / 1000; // A3 width in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
-    const map_height = (297 * 350) / 1000; // A3 height in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
+    const map_height = (594 * 350) / 1000; // A3 height in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
 
     const bounds = [
         [0, 0],
@@ -254,7 +254,7 @@ function MapToolPage() {
             <MenuBar onUpload={handleUpload} onDownload={handleDownload} />
             <div className='map-container'>
                 <MapContainer style={{ width: '100%', height: '100%' }} bounds={bounds} crs={L.CRS.Simple}>
-                    <ImageOverlay url='/2sal.png' bounds={bounds} />
+                    <ImageOverlay url='/Floorplan.png' bounds={bounds} />
 
                     {/* Handle Clicks to Add Nodes */}
                     <MapClickHandler />
