@@ -6,13 +6,14 @@ import MapView from './MapView.jsx';
 import LogIn from './LogIn.jsx';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
+import MapToolPage from './Pages/MapToolPage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={< LogIn />} />
-        <Route path="/map" element={<MapView />} />
+        <Route path="/map" element={<MapToolPage />} />
         <Route path="/" element={<Home />} />
         <Route path="/app" element={<App />} />
       </Routes>
