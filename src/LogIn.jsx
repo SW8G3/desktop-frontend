@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
 import { FaArrowLeft } from 'react-icons/fa'; // Import an icon from react-icons
 
@@ -23,7 +23,7 @@ const LogIn = () => {
         setMsgColor(''); // Clear message color
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_ADMIN_API_URL}/login/register`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/login/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,6 +78,7 @@ const LogIn = () => {
         } catch (err) {
             setMessage('An error occurred. Please try again later.');
             setMsgColor('red'); // Set message color to red for error
+            console.error('Error during login:', err); // Log the error for debugging
         }
     };
 
