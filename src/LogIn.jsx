@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
 import { FaArrowLeft } from 'react-icons/fa'; // Import an icon from react-icons
 
@@ -44,8 +44,9 @@ const LogIn = () => {
         } catch (err) {
             setMessage('An error occurred. Please try again later.');
             setMsgColor('red'); // Set message color to red for error
+            console.error('Error during registration:', err); // Log the error for debugging
         }
-    }
+    };
 
 
     const handleSubmit = async (e) => {
