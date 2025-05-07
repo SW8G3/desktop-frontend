@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
 import { FaArrowLeft } from 'react-icons/fa'; // Import an icon from react-icons
+import { registerUser, loginUser } from './API/AuthAPI';
 
 const LogIn = () => {
     const [username, setUsername] = useState('');
@@ -17,68 +18,39 @@ const LogIn = () => {
         }
     }, [navigate]);
 
-    const registerUser = async (e) => {
+    const registerUserHandler = async (e) => {
         e.preventDefault();
-        setMessage(''); // Clear any previous error messages
-        setMsgColor(''); // Clear message color
-
+        setMessage('');
+        setMsgColor('');
+    
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/login/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                setMessage(errorData.message || 'Registration failed. Please try again.');
-                setMsgColor('red'); // Set message color to red for error
-            } else {
-                setMessage('Registration successful! You can now log in.'); // Set confirmation message
-                setMsgColor('green'); // Set message color to green for success
-                setUsername(''); // Clear username field
-                setPassword(''); // Clear password field
-            }
+            await registerUser(username, password); // Call the API function
+            setMessage('Registration successful! You can now log in.');
+            setMsgColor('green');
+            setUsername('');
+            setPassword('');
         } catch (err) {
-            setMessage('An error occurred. Please try again later.');
-            setMsgColor('red'); // Set message color to red for error
-            console.error('Error during registration:', err); // Log the error for debugging
+            setMessage(err.message);
+            setMsgColor('red');
         }
     };
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage(''); // Clear any previous error messages
-        setMsgColor(''); // Clear message color
-
+        setMessage('');
+        setMsgColor('');
+    
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/login/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem('token', data.token); // Store the JWT token
-
-                const params = new URLSearchParams(window.location.search);
-                const redirectFrom = params.get('redirectFrom') || '/admin'; // Check for redirectFrom query parameter
-                navigate(redirectFrom); // Redirect to the specified page or /admin
-            } else {
-                const errorData = await response.json();
-                setMessage(errorData.message || 'Login failed. Please try again.');
-                setMsgColor('red'); // Set message color to red for error
-            }
+            const data = await loginUser(username, password); // Call the API function
+            localStorage.setItem('token', data.token); // Store the JWT token
+    
+            const params = new URLSearchParams(window.location.search);
+            const redirectFrom = params.get('redirectFrom') || '/admin';
+            navigate(redirectFrom);
         } catch (err) {
-            setMessage('An error occurred. Please try again later.');
-            setMsgColor('red'); // Set message color to red for error
-            console.error('Error during login:', err); // Log the error for debugging
+            setMessage(err.message);
+            setMsgColor('red');
         }
     };
 
@@ -129,7 +101,7 @@ const LogIn = () => {
                 </button>
                 <button
                     type="button"
-                    onClick={registerUser}
+                    onClick={registerUserHandler}
                     style={{ padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px' }}
                 >
                     Register
