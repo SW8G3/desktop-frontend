@@ -1,4 +1,4 @@
-import  { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
 
 const Home = () => {
@@ -6,17 +6,17 @@ const Home = () => {
   const URLPath = window.location.pathname; // Get the current URL path
 
   useEffect(() => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
-      }
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
+    }
   }, [navigate]);
 
-    return (
-      <div>
-          
-      </div>
-    );
+  return (
+    <div>
+
+    </div>
+  );
 };
 
 export default Home;
