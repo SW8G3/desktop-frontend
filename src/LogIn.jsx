@@ -55,7 +55,7 @@ const LogIn = () => {
         setMsgColor(''); // Clear message color
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_ADMIN_API_URL}/login/login`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/login/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
