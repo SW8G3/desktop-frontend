@@ -304,6 +304,7 @@ function MapToolPage() {
                                             onChange={(e) => handleTagInputChange(node.id, e.target.value)}
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
+                                                    e.preventDefault(); // Prevent default behavior, such as form submission
                                                     handleAddSearchTag(node.id);
                                                 }
                                             }}
