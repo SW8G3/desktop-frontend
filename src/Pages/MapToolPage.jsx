@@ -38,13 +38,13 @@ function navigateToLogin(navigate) {
 function MapToolPage() {
     const navigate = useNavigate(); // Initialize useNavigate
     const URLPath = window.location.pathname; // Get the current URL path
-
+  
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
-            navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
+          navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
         }
-    }, [navigate]);
+    }, [navigate, URLPath]); // Add URLPath to the dependency array
 
 
     const map_width = (420 * 350) / 1000; // A3 width in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters

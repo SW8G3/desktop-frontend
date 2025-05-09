@@ -11,7 +11,7 @@ function Home() {
       if (!token) {
         navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
       }
-  }, [navigate]);
+  }, [navigate, URLPath]); // Add URLPath to the dependency array
 
   return (
     <div>
