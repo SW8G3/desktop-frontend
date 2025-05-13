@@ -204,11 +204,12 @@ function MapToolPage() {
         try {
             if (!navigateToLogin(navigate)){ // Check if the user is logged in
                 const response = await uploadGraphData(nodes, edges);
+                toast.success('Graph data uploaded successfully');
                 console.log(response);
             }
         } catch (error) {
             console.error(error);
-            toast.error('Failed to upload graph data');
+            toast.error('Failed to upload graph data: ' + error.response.data.error + ' ' + error.response.data.unconnectedNodeIds);
         }
     };
 
@@ -233,7 +234,7 @@ function MapToolPage() {
             }
         } catch (error) {
             console.error(error);
-            toast.error('Failed to download graph data');
+            toast.error('Failed to download graph data: ' + error);
         }
     };
 
