@@ -1,5 +1,5 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
 import { MapContainer, ImageOverlay, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet';
 import './MapToolPage.css';
 import 'leaflet/dist/leaflet.css';
@@ -24,7 +24,29 @@ const waypointIcon = new L.DivIcon({
     popupAnchor: [0, -17.5], // Point from which the popup should open relative to the iconAnchor
 });
 
+function navigateToLogin(navigate) {
+    const URLPath = window.location.pathname; // Get the current URL path
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
+        return true; // Return true if the user is logged in
+    }
+    return false; // Return false if the user is not logged in
+}
+
 function MapToolPage() {
+    const navigate = useNavigate(); // Initialize useNavigate
+    const URLPath = window.location.pathname; // Get the current URL path
+  
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
+        }
+    }, [navigate, URLPath]); // Add URLPath to the dependency array
+
+
     const map_width = (420 * 350) / 1000; // A3 width in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
     const map_height = (3 * 297 * 350) / 1000; // A3 height in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
 
@@ -180,8 +202,10 @@ function MapToolPage() {
 
     const handleUpload = async () => {
         try {
-            const response = await uploadGraphData(nodes, edges);
-            console.log(response);
+            if (!navigateToLogin(navigate)){ // Check if the user is logged in
+                const response = await uploadGraphData(nodes, edges);
+                console.log(response);
+            }
         } catch (error) {
             console.error(error);
             toast.error('Failed to upload graph data');
@@ -190,21 +214,23 @@ function MapToolPage() {
 
     const handleDownload = async () => {
         try {
-            const { nodes, edges } = await downloadGraphData();
-            setNodes(nodes);
-            setEdges(edges);
+            if (!navigateToLogin(navigate)){ // Check if the user is logged in
+                const { nodes, edges } = await downloadGraphData();
+                setNodes(nodes);
+                setEdges(edges);
 
-            // Recalculate nextEdgeId based on the highest existing edge ID
-            const maxEdgeId = edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) : 0;
-            setNextEdgeId(maxEdgeId + 1);
+                // Recalculate nextEdgeId based on the highest existing edge ID
+                const maxEdgeId = edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) : 0;
+                setNextEdgeId(maxEdgeId + 1);
 
-            // Clear availableEdgeIds since we are resetting the edges
-            setAvailableEdgeIds(new Set());
+                // Clear availableEdgeIds since we are resetting the edges
+                setAvailableEdgeIds(new Set());
 
-            const maxNodeId = nodes.length > 0 ? Math.max(...nodes.map((node) => node.id)) : 0;
-            setNextNodeId(maxNodeId + 1);
-            setAvailableNodeIds(new Set());
-            toast.success('Graph data downloaded successfully');
+                const maxNodeId = nodes.length > 0 ? Math.max(...nodes.map((node) => node.id)) : 0;
+                setNextNodeId(maxNodeId + 1);
+                setAvailableNodeIds(new Set());
+                toast.success('Graph data downloaded successfully');
+            }
         } catch (error) {
             console.error(error);
             toast.error('Failed to download graph data');
