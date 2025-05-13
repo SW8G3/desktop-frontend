@@ -302,6 +302,12 @@ function MapToolPage() {
                                             placeholder="Add a tag"
                                             value={node.newTag || ''}
                                             onChange={(e) => handleTagInputChange(node.id, e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault(); // Prevent default behavior, such as form submission
+                                                    handleAddSearchTag(node.id);
+                                                }
+                                            }}
                                             style={{
                                                 padding: '5px',
                                                 border: '1px solid #ccc',
