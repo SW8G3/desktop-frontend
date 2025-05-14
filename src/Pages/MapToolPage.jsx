@@ -38,11 +38,11 @@ function navigateToLogin(navigate) {
 function MapToolPage() {
     const navigate = useNavigate(); // Initialize useNavigate
     const URLPath = window.location.pathname; // Get the current URL path
-  
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
-          navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
+            navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
         }
     }, [navigate, URLPath]); // Add URLPath to the dependency array
 
@@ -202,7 +202,7 @@ function MapToolPage() {
 
     const handleUpload = async () => {
         try {
-            if (!navigateToLogin(navigate)){ // Check if the user is logged in
+            if (!navigateToLogin(navigate)) { // Check if the user is logged in
                 const response = await uploadGraphData(nodes, edges);
                 toast.success('Graph data uploaded successfully');
                 console.log(response);
@@ -215,7 +215,7 @@ function MapToolPage() {
 
     const handleDownload = async () => {
         try {
-            if (!navigateToLogin(navigate)){ // Check if the user is logged in
+            if (!navigateToLogin(navigate)) { // Check if the user is logged in
                 const { nodes, edges } = await downloadGraphData();
                 setNodes(nodes);
                 setEdges(edges);
@@ -385,6 +385,14 @@ function MapToolPage() {
 
                         return (
                             <React.Fragment key={`${edge.id}-${edge.isObstructed}`}>
+                                {/* Render the visible edge as a Polyline */}
+                                <Polyline
+                                    positions={[fromPos, toPos]}
+                                    color={edge.isObstructed ? 'red' : 'blue'} // Red if obstructed, blue otherwise
+                                    weight={3} // Normal weight for the visible edge
+                                    className="edge-visual"
+                                />
+
                                 {/* Render the invisible hitbox as a Polyline */}
                                 <Polyline
                                     positions={[fromPos, toPos]}
@@ -440,13 +448,7 @@ function MapToolPage() {
                                     </Popup>
                                 </Polyline>
 
-                                {/* Render the visible edge as a Polyline */}
-                                <Polyline
-                                    positions={[fromPos, toPos]}
-                                    color={edge.isObstructed ? 'red' : 'blue'} // Red if obstructed, blue otherwise
-                                    weight={3} // Normal weight for the visible edge
-                                    className="edge-click-area"
-                                />
+
 
                                 {/* Render the clearance label as a Marker */}
                                 <Marker position={midPoint} icon={clearanceLabel} interactive={false} />
