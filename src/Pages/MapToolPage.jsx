@@ -276,6 +276,15 @@ function MapToolPage() {
         );
     };
 
+    useEffect(() => {
+        if (selectedNode) {
+            const timer = setTimeout(() => {
+                setSelectedNode(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [selectedNode]);
+
     return (
         <>
             <MenuBar onUpload={handleUpload} onDownload={handleDownload} />
