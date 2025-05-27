@@ -1,5 +1,5 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
 import { MapContainer, ImageOverlay, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet';
 import './MapToolPage.css';
 import 'leaflet/dist/leaflet.css';
@@ -24,9 +24,31 @@ const waypointIcon = new L.DivIcon({
     popupAnchor: [0, -17.5], // Point from which the popup should open relative to the iconAnchor
 });
 
+function navigateToLogin(navigate) {
+    const URLPath = window.location.pathname; // Get the current URL path
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
+        return true; // Return true if the user is logged in
+    }
+    return false; // Return false if the user is not logged in
+}
+
 function MapToolPage() {
+    const navigate = useNavigate(); // Initialize useNavigate
+    const URLPath = window.location.pathname; // Get the current URL path
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login?redirectFrom=' + URLPath); // Redirect to /login with redirectFrom query parameter
+        }
+    }, [navigate, URLPath]); // Add URLPath to the dependency array
+
+
     const map_width = (420 * 350) / 1000; // A3 width in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
-    const map_height = (297 * 350) / 1000; // A3 height in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
+    const map_height = (3 * 297 * 350) / 1000; // A3 height in mm times 350 because the map is 1 : 350 scale, divided by 1000 to convert to meters
 
     const bounds = [
         [0, 0],
@@ -180,34 +202,39 @@ function MapToolPage() {
 
     const handleUpload = async () => {
         try {
-            const response = await uploadGraphData(nodes, edges);
-            console.log(response);
+            if (!navigateToLogin(navigate)) { // Check if the user is logged in
+                const response = await uploadGraphData(nodes, edges);
+                toast.success('Graph data uploaded successfully');
+                console.log(response);
+            }
         } catch (error) {
             console.error(error);
-            toast.error('Failed to upload graph data');
+            toast.error('Failed to upload graph data: ' + error.response.data.error + ' ' + error.response.data.unconnectedNodeIds);
         }
     };
 
     const handleDownload = async () => {
         try {
-            const { nodes, edges } = await downloadGraphData();
-            setNodes(nodes);
-            setEdges(edges);
+            if (!navigateToLogin(navigate)) { // Check if the user is logged in
+                const { nodes, edges } = await downloadGraphData();
+                setNodes(nodes);
+                setEdges(edges);
 
-            // Recalculate nextEdgeId based on the highest existing edge ID
-            const maxEdgeId = edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) : 0;
-            setNextEdgeId(maxEdgeId + 1);
+                // Recalculate nextEdgeId based on the highest existing edge ID
+                const maxEdgeId = edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) : 0;
+                setNextEdgeId(maxEdgeId + 1);
 
-            // Clear availableEdgeIds since we are resetting the edges
-            setAvailableEdgeIds(new Set());
+                // Clear availableEdgeIds since we are resetting the edges
+                setAvailableEdgeIds(new Set());
 
-            const maxNodeId = nodes.length > 0 ? Math.max(...nodes.map((node) => node.id)) : 0;
-            setNextNodeId(maxNodeId + 1);
-            setAvailableNodeIds(new Set());
-            toast.success('Graph data downloaded successfully');
+                const maxNodeId = nodes.length > 0 ? Math.max(...nodes.map((node) => node.id)) : 0;
+                setNextNodeId(maxNodeId + 1);
+                setAvailableNodeIds(new Set());
+                toast.success('Graph data downloaded successfully');
+            }
         } catch (error) {
             console.error(error);
-            toast.error('Failed to download graph data');
+            toast.error('Failed to download graph data: ' + error);
         }
     };
 
@@ -249,12 +276,21 @@ function MapToolPage() {
         );
     };
 
+    useEffect(() => {
+        if (selectedNode) {
+            const timer = setTimeout(() => {
+                setSelectedNode(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [selectedNode]);
+
     return (
         <>
             <MenuBar onUpload={handleUpload} onDownload={handleDownload} />
             <div className='map-container'>
                 <MapContainer style={{ width: '100%', height: '100%' }} bounds={bounds} crs={L.CRS.Simple}>
-                    <ImageOverlay url='/2sal.png' bounds={bounds} />
+                    <ImageOverlay url='/Floorplan.png' bounds={bounds} />
 
                     {/* Handle Clicks to Add Nodes */}
                     <MapClickHandler />
@@ -302,6 +338,12 @@ function MapToolPage() {
                                             placeholder="Add a tag"
                                             value={node.newTag || ''}
                                             onChange={(e) => handleTagInputChange(node.id, e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault(); // Prevent default behavior, such as form submission
+                                                    handleAddSearchTag(node.id);
+                                                }
+                                            }}
                                             style={{
                                                 padding: '5px',
                                                 border: '1px solid #ccc',
@@ -332,11 +374,10 @@ function MapToolPage() {
                         ];
 
                         // Create a DivIcon for the clearance label
-                        // Create a DivIcon for the clearance label
                         const clearanceLabel = new L.DivIcon({
-                            html: `<div style="background-color: white; color: black; padding: 2px 5px; border: 1px solid black; border-radius: 3px; font-size: 12px; text-align: center;'>
-                                        ${edge.clearance || 0}
-                                    </div>`,
+                            html: `<div style="background-color: white; color: black; padding: 2px 5px; border: 1px solid black; border-radius: 3px; font-size: 12px; text-align: center;">
+                    ${edge.clearance || 0}
+               </div>`,
                             className: 'clearance-label',
                             iconSize: [15, 7.5], // 50% smaller than the original size
                             iconAnchor: [7.5, 3.75], // Adjust anchor to keep it centered
@@ -344,17 +385,27 @@ function MapToolPage() {
 
                         return (
                             <React.Fragment key={`${edge.id}-${edge.isObstructed}`}>
-                                {/* Render the edge as a Polyline */}
+                                {/* Render the visible edge as a Polyline */}
                                 <Polyline
                                     positions={[fromPos, toPos]}
                                     color={edge.isObstructed ? 'red' : 'blue'} // Red if obstructed, blue otherwise
+                                    weight={3} // Normal weight for the visible edge
+                                    className="edge-visual"
+                                />
+
+                                {/* Render the invisible hitbox as a Polyline */}
+                                <Polyline
+                                    positions={[fromPos, toPos]}
+                                    color="transparent" // Invisible hitbox
+                                    weight={10} // Increase the weight to make the hitbox larger
                                     eventHandlers={{
                                         click: (e) => {
+                                            e.originalEvent.preventDefault(); // Prevent default behavior
                                             e.originalEvent.stopPropagation(); // Stop map click event
-                                            setSelectedEdge(edge);
+                                            setSelectedEdge(edge); // Select the edge
                                         },
                                     }}
-                                    className="edge-click-area" // Add a class to identify edge click area
+                                    className="edge-hitbox" // Optional: Add a class for debugging or styling
                                 >
                                     <Popup>
                                         <div>
@@ -396,6 +447,8 @@ function MapToolPage() {
                                         </div>
                                     </Popup>
                                 </Polyline>
+
+
 
                                 {/* Render the clearance label as a Marker */}
                                 <Marker position={midPoint} icon={clearanceLabel} interactive={false} />

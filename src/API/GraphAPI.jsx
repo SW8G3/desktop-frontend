@@ -45,6 +45,10 @@ const uploadGraphData = async (nodes, edges) => {
     console.log('Uploading graph data...');
     console.log({ nodes, edges });
 
+    if (!nodes) {
+        return;
+    }
+
     // For each node, delete newTag property
     nodes = nodes.map(node => {
         // eslint-disable-next-line no-unused-vars
